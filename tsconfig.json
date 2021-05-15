@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "sourceMap": true, //에러위치 찾아줌
+    "lib": ["ES2020", "DOM"], // 최신문법
+    "jsx": "react",
+    "module": "commonJs", //최신모듈 (commonJS AMD ...)
+    "moduleResolution": "Node", //노드가 해석할 수 있게
+    "target": "es5", //   es5 로 변환
+    "strict": true, //필수!
+    "resolveJsonModule": true, // import json 허락
+    "baseUrl": ".",
+    "paths": {
+      "@hooks/*": ["hooks/*"],
+      "@components/*": ["components/*"],
+      "@layouts/*": ["layouts/*"],
+      "@pages/*": ["pages/*"],
+      "@utils/*": ["utils/*"],
+      "@typings/*": ["typings/*"]
+    }
+  }
+}
+//이미지나 css 파일 해석을 위해 typescript -> babel 로 넘겨주는 형태로 많이 함
