@@ -64,14 +64,17 @@ const Workspace: VFC = () => {
       .then(() => {
         mutate(false, false);
       });
-  }, []);
+  }, [mutate]);
+
   const onClickUserProfile = useCallback((e) => {
     e.stopPropagation();
     setShowUserMenu((prev: boolean) => !prev);
   }, []);
+
   const onClickCreateWorkspace = useCallback(() => {
     setShowCreateWorkspaceModal(true);
   }, []);
+
   const onCloseModal = useCallback(() => {
     setShowCreateWorkspaceModal(false);
     setShowCreateChannelModal(false);
@@ -79,6 +82,7 @@ const Workspace: VFC = () => {
     setShowInviteChannelModal(false);
     setShowInviteWorkspaceModal(false);
   }, []);
+
   const onCreateWorkspace = useCallback(
     (e) => {
       e.preventDefault();
@@ -110,6 +114,7 @@ const Workspace: VFC = () => {
   const toggleWorkspaceModal = useCallback(() => {
     setShowWorkspaceModal((prev) => !prev);
   }, []);
+
   const onClickAddChannel = useCallback(() => {
     setShowCreateChannelModal(true);
   }, []);
