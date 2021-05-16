@@ -9,7 +9,7 @@ import useSWR, { mutate } from 'swr';
 const LogIn = () => {
   //revalidata 서버에 요청을 보내서 데이터 다시 가져오기
   //mutate 데이터 수정하기
-  const { data, error, revalidate, mutate } = useSWR('http://localhost:3095/api/users', fetcher);
+  const { data, error, revalidate, mutate } = useSWR('/api/users', fetcher);
 
   const [logInError, setLogInError] = useState(false);
   const [email, onChangeEmail] = useInput('');
@@ -42,7 +42,7 @@ const LogIn = () => {
   }
 
   if (data) {
-    return <Redirect to="/workspace/channel" />;
+    return <Redirect to="/workspace/sleact/channel/일반" />;
   }
 
   // if (!error && userData) {
