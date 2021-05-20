@@ -27,7 +27,8 @@ const LogIn = () => {
           },
         )
         .then((response) => {
-          mutate(response.data, false);
+          revalidate();
+          // mutate(response.data, false);
           //oprivistic UI 낙관적 UI 성공할거라고 예상하고 반응 먼저 하고 검사 하겠다.
         })
         .catch((error) => {
