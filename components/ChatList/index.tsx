@@ -1,27 +1,30 @@
 import { ChatZone, Section, StickyHeader } from '@components/ChatList/styles';
 import { IDM } from '@typings/db';
-import React, { useCallback, VFC, forwardRef } from 'react';
+import React, { useCallback, VFC, forwardRef, ForwardedRef, RefObject } from 'react';
 import Chat from '@components/Chat';
 import { Scrollbars } from 'react-custom-scrollbars';
 
 interface Props {
   chatSections: { [key: string]: IDM[] };
-  setSize: (index: number) => void;
-  isEmpty: boolean;
+  setSize: (f: (size: number) => number) => Promise<IDM[][] | undefined>;
   isReachingEnd: boolean;
+  scrollRef: RefObject<Scrollbars>;
 }
-const ChatList = forwardRef<Scrollbars, Props>(({ chatSections, setSize, isEmpty, isReachingEnd }, ref) => {
+const ChatList: VFC<Props> = ({ chatSections, setSize, isReachingEnd, scrollRef }) => {
   const onScroll = useCallback((values) => {
-    if (values.scrollTop === 0) {
-      console.log('가장 위');
-      // 데이터 추가 로딩
+    if (values.scrollTop === 0 && !isReachingEnd) {
+      setSize((prevSize) => prevSize + 1).then(() => {
+        if (scrollRef?.current) {
+          scrollRef.current?.scrollTop(scrollRef.current?.getScrollHeight() - values.scrollHeight);
+        }
+      });
     }
   }, []);
 
   // Object.entries > 객체를 배열로 바꿔줌
   return (
     <ChatZone>
-      <Scrollbars autoHide ref={ref} onScrollFrame={onScroll}>
+      <Scrollbars autoHide ref={scrollRef} onScrollFrame={onScroll}>
         {Object.entries(chatSections).map(([date, chats]) => {
           return (
             <Section className={`section-${date}`} key={date}>
@@ -37,6 +40,6 @@ const ChatList = forwardRef<Scrollbars, Props>(({ chatSections, setSize, isEmpty
       </Scrollbars>
     </ChatZone>
   );
-});
+};
 
 export default ChatList;
