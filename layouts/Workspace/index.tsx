@@ -103,8 +103,8 @@ const Workspace: VFC = () => {
   const onCreateWorkspace = useCallback(
     (e) => {
       e.preventDefault();
-      if (!newWorkspace || !newWorkspace.trim()) return;
-      if (!newUrl || !newUrl.trim()) return;
+      if (!newWorkspace || !newWorkspace!.trim()) return;
+      if (!newUrl || !newUrl!.trim()) return;
       axios
         .post(
           '/api/workspaces',
@@ -149,7 +149,7 @@ const Workspace: VFC = () => {
       <Header>
         <RightMenu>
           <span onClick={onClickUserProfile}>
-            <ProfileImg src={gravatar.url(userData.nickname, { s: '28px', d: 'monsterid' })} alt={userData.nickname} />
+            <ProfileImg src={gravatar.url(userData.email, { s: '28px', d: 'monsterid' })} alt={userData.email} />
             {showUserMenu && (
               <Menu
                 style={{ top: 38, right: 0 }}

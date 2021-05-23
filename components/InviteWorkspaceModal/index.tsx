@@ -26,7 +26,7 @@ const InviteWorkspaceModal: FC<Props> = ({ show, onCloseModal, setShowInviteWork
   const onInviteMember = useCallback(
     (e) => {
       e.preventDefault();
-      if (!newMember || !newMember.trim()) {
+      if (!newMember || !newMember!.trim()) {
         return;
       }
       axios

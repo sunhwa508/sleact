@@ -5,8 +5,7 @@ import { Configuration as WebpackConfiguration } from 'webpack';
 import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
 //타입스크립트 블로킹형식으로 체크 하는데 동시에 돌아갈 수 있게 해줌 (성능 좋아짐)
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import { findSourceMap } from 'module';
-// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -93,14 +92,17 @@ const config: Configuration = {
   },
 };
 
+// 개발모드
 if (isDevelopment && config.plugins) {
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
   config.plugins.push(new ReactRefreshWebpackPlugin());
-  // config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: true }));
+  config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: true }));
 }
+// 배포모드
 if (!isDevelopment && config.plugins) {
+  // 좀 더 최적화되는 옛날 플러그을 위함
   config.plugins.push(new webpack.LoaderOptionsPlugin({ minimize: true }));
-  // config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'static' }));
+  config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'static' }));
 }
 
 export default config;

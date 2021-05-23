@@ -26,7 +26,7 @@ const InviteChannelModal: FC<Props> = ({ show, onCloseModal, setShowInviteChanne
   const onInviteMember = useCallback(
     (e) => {
       e.preventDefault();
-      if (!newMember || !newMember.trim()) {
+      if (!newMember || !newMember!.trim()) {
         return;
       }
       axios

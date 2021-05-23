@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env TS_MODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack serve --env development",
-    "build": "cross-env TS_MODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack",
+    "build": "cross-env NODE_ENV=production TS_MODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "sunhwa",
@@ -41,7 +41,8 @@
     "style-loader": "2.0.0",
     "swr": "0.5.6",
     "ts-node": "9.1.1",
-    "typescript": "4.2.4"
+    "typescript": "4.2.4",
+    "webpack-bundle-analyzer": "4.4.2"
   },
   "devDependencies": {
     "@babel/core": "7.14.0",
@@ -56,6 +57,7 @@
     "@types/react-router-dom": "5.1.7",
     "@types/socket.io-client": "^1.4.35",
     "@types/webpack": "5.28.0",
+    "@types/webpack-bundle-analyzer": "4.4.0",
     "@types/webpack-dev-server": "3.11.3",
     "@typescript-eslint/parser": "4.23.0",
     "babel-loader": "8.2.2",
