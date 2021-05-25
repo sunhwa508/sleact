@@ -8,9 +8,10 @@ sleact 채널 클론 코딩
 ![Group 5 (1)](https://user-images.githubusercontent.com/61695175/119512434-4389de00-bdae-11eb-88cf-59a1ef10310f.png)
 
 ## Getting Started
+관련 백엔드는 미리 만들어둔 api를 사용합니다.
 
 ## ✔ Prerequisites
-#### 프로젝트 초기 세팅
+#### 프로젝트 초기 세팅 ( CRA없이 )
 
 #### ✔Installing
 npm 패키지를 initialize 하기 => npm init
@@ -142,7 +143,7 @@ const config: Configuration = {
     ],
   },
     plugins: [
-    //ts, webpack 동시에 돌아가게끔
+    //타입스크립트 검사할때 블로킹식으로 해서 하나씩하게 되는데 ts, webpack 동시에 돌아가게끔해서 성능이 좋아짐
     new ForkTsCheckerWebpackPlugin({
       async: false,
       // eslint: {
@@ -158,9 +159,9 @@ const config: Configuration = {
     filename: '[name].js', //entry 의 app.js 
     publicPath: '/dist/',
   },
-  //서버 프록시 설정
+  //핫 리로딩을 위해서 서버 프록시 설정
    devServer: {
-    historyApiFallback: true, // react router
+    historyApiFallback: true, // react router할때 필요한 설정
     port: 3090,
     publicPath: '/dist/',
     proxy: {
@@ -176,6 +177,7 @@ const config: Configuration = {
 ````
 // 개발모드
 if (isDevelopment && config.plugins) {
+  // 리액트 핫 리로딩을 위한 코드 (보통 CRA로 세팅할 경우 다 포함되어있다) 
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
   config.plugins.push(new ReactRefreshWebpackPlugin());
   config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: true }));
@@ -239,6 +241,7 @@ render(
 ````
 
 ## foldering
+````
 └─sleact            
    ├─ components
    ├─ hooks
@@ -256,7 +259,37 @@ render(
    │  .gitignore
    │  tsconfig-for-webpack-config.json
    └─ webpack-config.ts
+````
 
+## 오류 해결하기
+npx webpack 을 돌리게 되면 ".ts" 파일을 읽지 못하는 오류가 뜬다..
+tscongfig-for-webpack-config.json
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "target": "ES5",
+    "esModuleInterop": true
+  }
+}
+추가해준다.
+
+package.json
+build 명령어에 명령을 추가 해준다. 
+ "build": "cross-env NODE_ENV=production TS_MODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack",
+ 
+[webpack doc 참고](https://webpack.js.org/configuration/configuration-languages/#typescript)
+
+## 핫리로딩 설정하기
+// 웹팩데브서버로 프록시서버 역할도 해주기때문에 여러가지로 유용하게 사용 가능
+npm i webpack-dev-server webpack-cli
+npm i @types/webpack-dev-server
+
+npm i @pmmmwh/react-refresh-webpack-plugin
+npm i react-refresh
+
+webpack-config 설정 위 내용 참고 
+"dev": "cross-env TS_MODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack serve --env development",
 
 ## ✔Acknowledgments
 
