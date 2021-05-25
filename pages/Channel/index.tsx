@@ -1,29 +1,27 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Header, Container } from './styles';
-import useInput from '@hooks/useInput';
 import ChatBox from '@components/ChatBox';
 import ChatList from '@components/ChatList';
+import InviteChannelModal from '@components/InviteChannelModal';
+import useInput from '@hooks/useInput';
+import useSocket from '@hooks/useSocket';
+import { Container, Header, DragOver } from '@pages/Channel/styles';
+import { IChannel, IChat, IUser } from '@typings/db';
+import fetcher from '@utils/fetcher';
+import makeSection from '@utils/makeSection';
+import axios from 'axios';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Scrollbars from 'react-custom-scrollbars';
 import { useParams } from 'react-router';
 import useSWR, { useSWRInfinite } from 'swr';
-import fetcher from '@utils/fetcher';
-import useSocket from '@hooks/useSocket';
-import Scrollbars from 'react-custom-scrollbars';
-import axios from 'axios';
-import makeSection from '@utils/makeSection';
-import { IChannel, IUser, IChat } from '@typings/db';
-import InviteChannelModal from '@components/InviteChannelModal';
 
 const Channel = () => {
   const { workspace, channel } = useParams<{ workspace: string; channel: string }>();
-  const { data: myData } = useSWR(`/api/users`, fetcher);
+  const { data: myData } = useSWR('/api/users', fetcher);
   const [chat, onChangeChat, setChat] = useInput('');
   const { data: channelData } = useSWR<IChannel>(`/api/workspaces/${workspace}/channels/${channel}`, fetcher);
-  // 채팅 받아오기
   const { data: chatData, mutate: mutateChat, revalidate, setSize } = useSWRInfinite<IChat[]>(
-    (index) => `/api/workspaces/${workspace}/dms/${channel}/chats?perPage=20&page=${index + 1}`,
+    (index) => `/api/workspaces/${workspace}/channels/${channel}/chats?perPage=20&page=${index + 1}`,
     fetcher,
   );
-  // 채널 멤버 가져오기
   const { data: channelMembersData } = useSWR<IUser[]>(
     myData ? `/api/workspaces/${workspace}/channels/${channel}/members` : null,
     fetcher,
@@ -33,11 +31,16 @@ const Channel = () => {
   const isReachingEnd = isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
   const scrollbarRef = useRef<Scrollbars>(null);
   const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
 
-  // 채팅등록
+  // 0초 A: 안녕~(optimistic UI)
+  // 1초 B: 안녕~
+  // 2초 A: 안녕~(실제 서버)
+
   const onSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
+      console.log(chat);
       if (chat?.trim() && chatData && channelData) {
         const savedChat = chat;
         mutateChat((prevChatData) => {
@@ -55,13 +58,11 @@ const Channel = () => {
           setChat('');
           scrollbarRef.current?.scrollToBottom();
         });
-
         axios
           .post(`/api/workspaces/${workspace}/channels/${channel}/chats`, {
             content: chat,
           })
           .then(() => {
-            //잠깐 먼저 보였더라도, 리벨리데잇 하는 순간 순서에 맞게 정렬된다.
             revalidate();
           })
           .catch(console.error);
@@ -121,16 +122,62 @@ const Channel = () => {
     setShowInviteChannelModal(false);
   }, []);
 
+  const onChangeFile = useCallback((e) => {
+    const formData = new FormData();
+    if (e.target.files) {
+      // Use DataTransferItemList interface to access the file(s)
+      for (let i = 0; i < e.target.files.length; i++) {
+        const file = e.target.files[i].getAsFile();
+        console.log('... file[' + i + '].name = ' + file.name);
+        formData.append('image', file);
+      }
+    }
+    axios.post(`/api/workspaces/${workspace}/channels/${channel}/images`, formData).then(() => {});
+  }, []);
+
+  const onDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      console.log(e);
+      const formData = new FormData();
+      if (e.dataTransfer.items) {
+        // Use DataTransferItemList interface to access the file(s)
+        for (let i = 0; i < e.dataTransfer.items.length; i++) {
+          // If dropped items aren't files, reject them
+          if (e.dataTransfer.items[i].kind === 'file') {
+            const file = e.dataTransfer.items[i].getAsFile();
+            console.log('... file[' + i + '].name = ' + file.name);
+            formData.append('image', file);
+          }
+        }
+      } else {
+        // Use DataTransfer interface to access the file(s)
+        for (let i = 0; i < e.dataTransfer.files.length; i++) {
+          console.log('... file[' + i + '].name = ' + e.dataTransfer.files[i].name);
+          formData.append('image', e.dataTransfer.files[i]);
+        }
+      }
+      axios.post(`/api/workspaces/${workspace}/channels/${channel}/images`, formData).then(() => {
+        setDragOver(false);
+      });
+    },
+    [workspace, channel],
+  );
+
+  const onDragOver = useCallback((e) => {
+    e.preventDefault();
+    console.log(e);
+    setDragOver(true);
+  }, []);
+
   if (!myData || !myData) {
     return null;
   }
 
-  // [].concat(...chatData) 이뮤터블 하게 하기위해 (기존데이터 변형 없이 새로운 데이터 생성)
-  // flat() => 2차원배열을 1차원배열로 만드는것
   const chatSections = makeSection(chatData ? chatData.flat().reverse() : []);
 
   return (
-    <Container>
+    <Container onDrop={onDrop} onDragOver={onDragOver}>
       <Header>
         <span>#{channel}</span>
         <div className="header-right">
@@ -153,6 +200,7 @@ const Channel = () => {
         onCloseModal={onCloseModal}
         setShowInviteChannelModal={setShowInviteChannelModal}
       />
+      {dragOver && <DragOver>업로드!</DragOver>}
     </Container>
   );
 };
