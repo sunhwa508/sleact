@@ -5,7 +5,10 @@ sleact 채널 클론 코딩
 
 <h1>sleact 📲 </h1>
 
-![Group 5 (1)](https://user-images.githubusercontent.com/61695175/119512434-4389de00-bdae-11eb-88cf-59a1ef10310f.png)
+
+<div><center>
+ <img src="https://user-images.githubusercontent.com/61695175/119512434-4389de00-bdae-11eb-88cf-59a1ef10310f.png" width="600" height="auto">
+</div></center>
 
 ## Getting Started
 관련 백엔드는 미리 만들어둔 api를 사용합니다.
