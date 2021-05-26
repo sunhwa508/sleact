@@ -160,6 +160,7 @@ const config: Configuration = {
     publicPath: '/dist/',
   },
   //핫 리로딩을 위해서 서버 프록시 설정
+  //cors 오류도 피할 수 있다. (보통 개발환경에서만 쓰임) 
    devServer: {
     historyApiFallback: true, // react router할때 필요한 설정
     port: 3090,
@@ -240,7 +241,7 @@ render(
 );
 ````
 
-## foldering
+## 폴더구조
 ````
 └─sleact            
    ├─ components
@@ -280,7 +281,7 @@ build 명령어에 명령을 추가 해준다.
  
 [webpack doc 참고](https://webpack.js.org/configuration/configuration-languages/#typescript)
 
-## 핫리로딩 설정하기
+## 핫 리로딩 설정하기
 // 웹팩데브서버로 프록시서버 역할도 해주기때문에 여러가지로 유용하게 사용 가능
 npm i webpack-dev-server webpack-cli
 npm i @types/webpack-dev-server
@@ -290,9 +291,28 @@ npm i react-refresh
 
 webpack-config 설정 위 내용 참고 
 "dev": "cross-env TS_MODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack serve --env development",
+[WDS] webpack dev server 를 사용할 수 있는 명령어 (라이브 리뷰)
+
+
+## ✔ 상태관리 SWR ( 비슷한것 useQuery)
+npm i swr
+초기세팅
+const {data, loading,error} = useSWR('주소(http://localhost:3095/api/users', fetcher)
+useSWR = fetcher => 으로 넘겨주는 역할
+fetcher 구현필요 
+
+fetcher.ts
+````
+import axios from 'axios';
+
+const fetcher = (url: string) => axios.get(url, { withCredentials: true }).then((response) => response.data);
+// withCredentials = 쿠키생성 **쿠키생성은 백엔드가, 쿠키 보내줌은 프론트가 
+export default fetcher;
+
+````
 
 ## ✔Acknowledgments
-
+CRA없이 웹펙, 바벨, 타입스크립트 등을 하나하나 세팅해보며, 리액트가 빌드되는 프로세스를 이해할 수 있었습니다.  
 
 #### * 인프런 zerocho님의 강의를 참고하였습니다.
 
