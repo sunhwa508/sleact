@@ -11,7 +11,7 @@ sleact 채널 클론 코딩
 </div></center>
 
 ## Getting Started
-관련 백엔드는 미리 만들어둔 api를 사용합니다.
+관련 백엔드는 미리 만들어져 있는 api를 사용합니다.
 
 ## ✔ Prerequisites
 #### 프로젝트 초기 세팅 ( CRA없이 )
