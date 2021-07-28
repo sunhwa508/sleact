@@ -35,7 +35,7 @@ eslint-plugin-prettier eslint-config-prettier (eslint 와 prettier를 연결해�
 
 .prettierrc (prettier.json) (리눅스쪽에선 숨김파일 이라는 의미..)
 확장자가 없고 앞에 .이 붙은 애들은 보통 설정파일 
-```
+```javascript
 {
   "printWidth": 120, //한줄에 최대길이 설정
   "tabWidth": 2,
@@ -50,7 +50,7 @@ eslint-plugin-prettier eslint-config-prettier (eslint 와 prettier를 연결해�
 
 타입스크립트 설정파일 
 tsconfig.json 
-````
+````javascript
 {
   "compilerOptions": {
     "esModuleInterop": true, 
@@ -91,7 +91,7 @@ style-loader css-loader
 웹팩에 타입스크립트를 받아서 > babel로 처리 > 자바스크립트로 만든다.
 
 webpack.config.ts
-````
+````javascript
 const config: Configuration = {
   name: 'sleact', // 웹팩 설정 이름
   mode: isDevelopment ? 'development' : 'production',
@@ -178,7 +178,7 @@ const config: Configuration = {
   }
 ````
 
-````
+````javascript
 // 개발모드
 if (isDevelopment && config.plugins) {
   // 리액트 핫 리로딩을 위한 코드 (보통 CRA로 세팅할 경우 다 포함되어있다) 
@@ -197,7 +197,7 @@ if (!isDevelopment && config.plugins) {
 ## html파일 만들기
 index.html
 기본 세팅
-````
+````javascript
 //실제 슬랙의 html을 가져다 사용
 <html>
     <head>
@@ -229,7 +229,7 @@ index.html
 ````
 
 client.ts
-````
+````javascript
 import React from 'react';
 import { render } from 'react-dom';
 
@@ -305,7 +305,7 @@ useSWR = fetcher => 으로 넘겨주는 역할
 fetcher 구현필요 
 
 fetcher.ts
-````
+````javascript
 import axios from 'axios';
 
 const fetcher = (url: string) => axios.get(url, { withCredentials: true }).then((response) => response.data);
